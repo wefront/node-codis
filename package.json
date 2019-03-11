@@ -1,0 +1,32 @@
+{
+  "name": "node-codis",
+  "version": "1.0.0",
+  "description": "Codis client for node",
+  "main": "./dist/index.js",
+  "scripts": {
+    "dev": "tsc -p . --watch",
+    "build": "tsc -p .",
+    "test": "echo 'no test now'"
+  },
+  "types": "dist/index.d.ts",
+  "typings": "dist/index.d.ts",
+  "author": "guahao inc",
+  "license": "MIT",
+  "engines": {
+    "node": ">=0.6.0"
+  },
+  "homepage": "https://github.com/wefront/node-codis",
+  "dependencies": {
+    "debug": "^4.1.1",
+    "lodash": "^4.17.11",
+    "node-zookeeper-client": "^0.2.3",
+    "redis": "^2.8.0"
+  },
+  "devDependencies": {
+    "@types/debug": "^4.1.2",
+    "@types/lodash": "^4.14.121",
+    "@types/node-zookeeper-client": "^0.2.6",
+    "@types/redis": "^2.8.10",
+    "typescript": "^3.1.3"
+  }
+}
