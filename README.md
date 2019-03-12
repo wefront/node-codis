@@ -10,7 +10,7 @@ Use the [node-zookeeper-client](https://www.npmjs.com/package/node-zookeeper-cli
 
 Use the [redis](https://www.npmjs.com/package/redis) library to connect to the codis proxy service.
 
-[中文说明](./README-zh.md)
+[中文说明](https://github.com/wefront/node-codis/blob/master/README-zh.md)
 
 # Getting started
 
@@ -302,3 +302,7 @@ GET /test - - ms - -
 GET /test - - ms - -
 192.168.3.62:19201
 ```
+
+## Licence
+
+NodeCodis is licensed under the MIT License - see the [LICENSE](https://github.com/wefront/node-codis/blob/master/LICENCE) file for details.

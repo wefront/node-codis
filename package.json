@@ -1,6 +1,6 @@
 {
   "name": "node-codis",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Codis client for node",
   "main": "./dist/index.js",
   "scripts": {
@@ -8,6 +8,15 @@
     "build": "tsc -p .",
     "test": "echo 'no test now'"
   },
+  "keywords": [
+    "codis",
+    "redis",
+    "node",
+    "cluster",
+    "datebase",
+    "nodejs",
+    "client"
+  ],
   "types": "dist/index.d.ts",
   "typings": "dist/index.d.ts",
   "author": "guahao inc",

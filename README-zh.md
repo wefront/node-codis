@@ -10,7 +10,7 @@ Node-codis是在nodejs上运行的codis客户端，用于连接到redis集群服
 
 使用了 [redis](https://www.npmjs.com/package/redis) 这个库来连接 codis 代理服务。
 
-[English Document](./README.md)
+[English Document](https://github.com/wefront/node-codis/blob/master/README.md)
 
 # 开始
 
@@ -136,6 +136,8 @@ const nodeCodis = new NodeCodis({
 console.log(nodeCodis.codisClientPool)
 ```
 
+---
+
 ### 事件
 
 #### connected
@@ -197,9 +199,6 @@ nodeCodis.on('reconnected', (err, client) => {
 
 随机获取已连接的codis客户端，如果客户端列表为空，则返回 `null`。
 你可以在某些框架的中间件中使用此方法来实现负载平衡。
-
-Randomly get a connected codis client, if the client pool is empty, return `null`.
-You can use this method in some framework middleware to achieve load balancing.
 
 ##### example
 
@@ -301,3 +300,7 @@ GET /test - - ms - -
 GET /test - - ms - -
 192.168.3.62:19201
 ```
+
+## 许可证
+
+NodeCodis 基于 MIT 许可证，查看[LICENSE](https://github.com/wefront/node-codis/blob/master/LICENCE)获取详细信息。
