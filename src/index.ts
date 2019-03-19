@@ -93,11 +93,14 @@ export class NodeCodis {
             try {
               const detail = JSON.parse(data.toString('utf8'))
               const redisClientOpts = this._opts.redisClientOpts || {}
-              log(`Connect to codis at proxy:${proxy} @${detail.addr}`)
-              const client = redis.createClient(Object.assign(redisClientOpts, {
-                url: `redis://${detail.addr}`,
-                password: this._opts.codisPassword || ''
-              }))
+              const clientOpts: any = {
+                url: `redis://${detail.addr}`
+              }
+              if (this._opts.codisPassword) {
+                clientOpts.password = this._opts.codisPassword
+              }
+              const client = redis.createClient(Object.assign(redisClientOpts, clientOpts))
+              client.on('connect', () => log(`Connect to codis at proxy:${proxy} @${detail.addr}`))
               client.on('error', e => log('Connect codis failed: ', e))
               this._addCodisClient(proxy, { client, detail })
             } catch (e) {

@@ -62,6 +62,12 @@ nodeCodis.on('connected', (err, client) => {
 
 在 zookeeper 上的 codis proxy 的节点路径。 NodeCodis 将与此目录中的所有 codis proxy 建立连接，然后随机选择一个作为客户端。例如：
 
+> 在 `codis2.x` 版本, 一般位于 `/zk/codis/db_${product_name}/proxy`。
+
+> 在 `codis3.x` 版本, 如果服务端 codis-proxy 配置成 `jodis_compatible = false`, 一般位于 `/jodis/${product_name}/proxy`。
+
+##### example
+
 ```bash
 /zk/codis/db_test_node/proxy
 ```
@@ -105,7 +111,7 @@ const nodeCodis = new NodeCodis({
 
 #### redisClientOpts `object` `optional`
 
-我们使用 `redis` 连接到 codis proxy 服务，因此您可以在创建 redis 户端时传递这些选项。
+我们使用 `redis` 连接到 codis-proxy 服务，因此您可以在创建 redis 户端时传递这些选项。
 
 参考这里 [https://github.com/NodeRedis/node_redis#rediscreateclient](https://github.com/NodeRedis/node_redis#rediscreateclient)
 
@@ -142,7 +148,7 @@ console.log(nodeCodis.codisClientPool)
 
 #### connected
 
-当第一次连接完所有的 codis proxy时，将触发 `connect` 事件，并随机选择一个已连接的codis客户端传入回调函数。
+当第一次连接完所有的 codis-proxy 时，将触发 `connect` 事件，并随机选择一个已连接的codis客户端传入回调函数。
 
 ##### example
 
@@ -169,7 +175,7 @@ nodeCodis.on('connected', (err, client) => {
 
 #### reconnected
 
-当 codis 的 zookeeper 节点发生变化时，内部会进行 codis proxy 的重新连接，并触发 `reconnected` 事件，并将随机一个已连接的 codis 客户端传入回调函数。
+当 codis 的 zookeeper 节点发生变化时，内部会进行 codis-proxy 的重新连接，并触发 `reconnected` 事件，并将随机一个已连接的 codis 客户端传入回调函数。
 
 ##### example
 

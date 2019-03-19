@@ -52,15 +52,18 @@ var NodeCodis = /** @class */ (function () {
                     var childPath = rootPath + '/' + proxy;
                     _this._getData(childPath, function (data) {
                         try {
-                            var detail = JSON.parse(data.toString('utf8'));
+                            var detail_1 = JSON.parse(data.toString('utf8'));
                             var redisClientOpts = _this._opts.redisClientOpts || {};
-                            log("Connect to codis at proxy:" + proxy + " @" + detail.addr);
-                            var client = redis.createClient(Object.assign(redisClientOpts, {
-                                url: "redis://" + detail.addr,
-                                password: _this._opts.codisPassword || ''
-                            }));
+                            var clientOpts = {
+                                url: "redis://" + detail_1.addr
+                            };
+                            if (_this._opts.codisPassword) {
+                                clientOpts.password = _this._opts.codisPassword;
+                            }
+                            var client = redis.createClient(Object.assign(redisClientOpts, clientOpts));
+                            client.on('connect', function () { return log("Connect to codis at proxy:" + proxy + " @" + detail_1.addr); });
                             client.on('error', function (e) { return log('Connect codis failed: ', e); });
-                            _this._addCodisClient(proxy, { client: client, detail: detail });
+                            _this._addCodisClient(proxy, { client: client, detail: detail_1 });
                         }
                         catch (e) {
                             log('Connect codis failed:', e);

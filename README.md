@@ -62,6 +62,12 @@ Comma separated `host:port` pairs, each represents a ZooKeeper server. You can o
 
 Node path of codis-proxy on zookeeper. NodeCodis will establish a connection with all codis-proxy in this directory, and then randomly select one as the client. e.g.
 
+> In the `codis2.x`, it is usually located at `/zk/codis/db_${product_name}/proxy`
+
+> In the `codis3.x`, If the server codis-proxy is configured as `jodis_compatible = false`, it is usually located at `/jodis/${product_name}/proxy`
+
+##### example
+
 ```bash
 /zk/codis/db_test_node/proxy
 ```
@@ -105,7 +111,7 @@ const nodeCodis = new NodeCodis({
 
 #### redisClientOpts `object` `optional`
 
-We use redis to connect to the codis proxy service, so you can pass in these parameters when redis creates the client.
+We use redis to connect to the codis-proxy service, so you can pass in these parameters when redis creates the client.
 
 Reference here [https://github.com/NodeRedis/node_redis#rediscreateclient](https://github.com/NodeRedis/node_redis#rediscreateclient)
 
@@ -144,7 +150,7 @@ console.log(nodeCodis.codisClientPool)
 
 #### connected
 
-When all codis proxies are connected for the first time, the connect event is fired and a connected codis client is randomly selected as the argument to the callback function.
+When all codis-proxy are connected for the first time, the connect event is fired and a connected codis client is randomly selected as the argument to the callback function.
 
 ##### example
 
@@ -171,7 +177,7 @@ nodeCodis.on('connected', (err, client) => {
 
 #### reconnected
 
-When the zookeeper node of codis changes, the codis proxy is reconnected internally, and the reconnected event is triggered, and a random connected codis client is passed to the callback function.
+When the zookeeper node of codis changes, the codis-proxy is reconnected internally, and the reconnected event is triggered, and a random connected codis client is passed to the callback function.
 
 ##### example
 
