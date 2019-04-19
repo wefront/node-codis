@@ -71,6 +71,7 @@ export class NodeCodis {
   private _connect() {
     const rootPath = this._opts.zkCodisProxyDir
     this._zkClient.once('connected', () => {
+      log('Zookeeper successfully connected on ' + this._opts.zkServers)
       this._getChildren(rootPath, (children: string[]) => {
         // The proxy that needs to be connected
         const toCreate = children.filter(item => !this._lastProxies.includes(item))
@@ -100,7 +101,7 @@ export class NodeCodis {
                 clientOpts.password = this._opts.codisPassword
               }
               const client = redis.createClient(Object.assign(redisClientOpts, clientOpts))
-              client.on('connect', () => log(`Connect to codis at proxy:${proxy} @${detail.addr}`))
+              client.on('connect', () => log(`Connect to codis on proxy:${proxy} @${detail.addr}`))
               client.on('error', e => log('Connect codis failed: ', e))
               this._addCodisClient(proxy, { client, detail })
             } catch (e) {
@@ -121,6 +122,10 @@ export class NodeCodis {
           })
         })
       })
+    })
+
+    this._zkClient.on('state', state => {
+      console.log(state)
     })
 
     this._zkClient.connect()

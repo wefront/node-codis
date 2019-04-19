@@ -1,6 +1,6 @@
 {
   "name": "node-codis",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Codis client for node",
   "main": "./dist/index.js",
   "scripts": {

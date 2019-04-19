@@ -34,6 +34,7 @@ var NodeCodis = /** @class */ (function () {
         var _this = this;
         var rootPath = this._opts.zkCodisProxyDir;
         this._zkClient.once('connected', function () {
+            log('Zookeeper successfully connected on ' + _this._opts.zkServers);
             _this._getChildren(rootPath, function (children) {
                 // The proxy that needs to be connected
                 var toCreate = children.filter(function (item) { return !_this._lastProxies.includes(item); });
@@ -61,7 +62,7 @@ var NodeCodis = /** @class */ (function () {
                                 clientOpts.password = _this._opts.codisPassword;
                             }
                             var client = redis.createClient(Object.assign(redisClientOpts, clientOpts));
-                            client.on('connect', function () { return log("Connect to codis at proxy:" + proxy + " @" + detail_1.addr); });
+                            client.on('connect', function () { return log("Connect to codis on proxy:" + proxy + " @" + detail_1.addr); });
                             client.on('error', function (e) { return log('Connect codis failed: ', e); });
                             _this._addCodisClient(proxy, { client: client, detail: detail_1 });
                         }
@@ -82,6 +83,9 @@ var NodeCodis = /** @class */ (function () {
                     });
                 });
             });
+        });
+        this._zkClient.on('state', function (state) {
+            console.log(state);
         });
         this._zkClient.connect();
     };
