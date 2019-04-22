@@ -120,6 +120,7 @@ const nodeCodis = new NodeCodis({
 是否启用日志，默认为打开，打印的日志格式如下：
 
 `node-codis` Connect to codis at proxy:e203bf77d1c7b3e2c132984f14827c04 @192.168.3.62:19201 +0ms
+
 `node-codis` Connect to codis at proxy:40297cde8c3453714459ab1c452c6c56 @192.168.3.72:19201 +7ms
 
 ---

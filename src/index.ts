@@ -57,7 +57,7 @@ export class NodeCodis {
     this._connect()
   }
 
-  // 校验传参
+  // validation constructor params
   private _validParameter() {
     if (!this._opts.zkServers) {
       throw new Error('The parameter zkServers is required!')
@@ -123,11 +123,7 @@ export class NodeCodis {
         })
       })
     })
-
-    this._zkClient.on('state', state => {
-      console.log(state)
-    })
-
+    
     this._zkClient.connect()
   }
 
