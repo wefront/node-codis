@@ -26,7 +26,7 @@ export interface NodeCodisOpts {
   log?: boolean
 }
 
-export interface CodisClient extends redis.RedisClient {}
+export interface CodisClient extends redis.RedisClient { }
 
 export class NodeCodis {
   public static print = redis.print
@@ -44,6 +44,8 @@ export class NodeCodis {
   private _subscribers: any
   // Currently connected codis client
   private _codisClient: any
+  // Used to detect zookeeper timeout
+  private _zkTimeId: any
 
   constructor(opts: NodeCodisOpts) {
     this._opts = opts || Object.create(null)
@@ -53,7 +55,8 @@ export class NodeCodis {
     this._codisClientPool = Object.create(null)
     this._subscribers = Object.create(null)
     this._lastProxies = []
-    this._zkClient = zookeeper.createClient(opts.zkServers, opts.zkClientOpts)
+    this._zkClient = zookeeper.createClient(opts.zkServers, { retries: 1, ...opts.zkClientOpts })
+    this._validZkTimeout()
     this._connect()
   }
 
@@ -67,7 +70,19 @@ export class NodeCodis {
     }
   }
 
-  // initialization
+  // node-zookeeper-client has a bug that will reconnect indefinitely when not connected to zk,
+  // so manually do a timeout detection
+  private _validZkTimeout() {
+    const { retries, sessionTimeout } = (this._zkClient as any).options
+    this._zkTimeId = setTimeout(() => {
+      log(`Could not connect zk ${this._opts.zkCodisProxyDir}, time out`)
+      this._zkClient.close()
+    }, retries * sessionTimeout)
+    this._zkClient.on('connected', () => {
+      clearTimeout(this._zkTimeId)
+    })
+  }
+
   private _connect() {
     const rootPath = this._opts.zkCodisProxyDir
     this._zkClient.once('connected', () => {
@@ -123,7 +138,7 @@ export class NodeCodis {
         })
       })
     })
-    
+
     this._zkClient.connect()
   }
 
@@ -199,7 +214,7 @@ export class NodeCodis {
       debug.disable()
     }
   }
-  
+
   public get codisClientPool() {
     return this._codisClientPool
   }
@@ -216,7 +231,7 @@ export class NodeCodis {
     }
     this._subscribers[event].push(handler)
   }
-  
+
   // Randomly get a connected redis client
   public static getRandomClient(clientsMap) {
     const proxies = Object.keys(clientsMap)

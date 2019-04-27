@@ -26,8 +26,10 @@ export declare class NodeCodis {
     private _codisClientPool;
     private _subscribers;
     private _codisClient;
+    private _zkTimeId;
     constructor(opts: NodeCodisOpts);
     private _validParameter;
+    private _validZkTimeout;
     private _connect;
     private _getChildren;
     private _getData;

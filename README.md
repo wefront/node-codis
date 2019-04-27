@@ -92,7 +92,7 @@ Defaults options:
 {
     sessionTimeout: 30000,
     spinDelay: 1000,
-    retries: 0
+    retries: 1
 }
 ```
 

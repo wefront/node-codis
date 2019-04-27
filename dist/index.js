@@ -1,4 +1,15 @@
 "use strict";
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var zookeeper = require("node-zookeeper-client");
 var redis = require("redis");
@@ -17,10 +28,11 @@ var NodeCodis = /** @class */ (function () {
         this._codisClientPool = Object.create(null);
         this._subscribers = Object.create(null);
         this._lastProxies = [];
-        this._zkClient = zookeeper.createClient(opts.zkServers, opts.zkClientOpts);
+        this._zkClient = zookeeper.createClient(opts.zkServers, __assign({ retries: 1 }, opts.zkClientOpts));
+        this._validZkTimeout();
         this._connect();
     }
-    // 校验传参
+    // validation constructor params
     NodeCodis.prototype._validParameter = function () {
         if (!this._opts.zkServers) {
             throw new Error('The parameter zkServers is required!');
@@ -29,7 +41,19 @@ var NodeCodis = /** @class */ (function () {
             throw new Error('The parameter zkCodisProxyDir is required!');
         }
     };
-    // initialization
+    // node-zookeeper-client has a bug that will reconnect indefinitely when not connected to zk,
+    // so manually do a timeout detection
+    NodeCodis.prototype._validZkTimeout = function () {
+        var _this = this;
+        var _a = this._zkClient.options, retries = _a.retries, sessionTimeout = _a.sessionTimeout;
+        this._zkTimeId = setTimeout(function () {
+            log("Could not connect zk " + _this._opts.zkCodisProxyDir + ", time out");
+            _this._zkClient.close();
+        }, retries * sessionTimeout);
+        this._zkClient.on('connected', function () {
+            clearTimeout(_this._zkTimeId);
+        });
+    };
     NodeCodis.prototype._connect = function () {
         var _this = this;
         var rootPath = this._opts.zkCodisProxyDir;
@@ -83,9 +107,6 @@ var NodeCodis = /** @class */ (function () {
                     });
                 });
             });
-        });
-        this._zkClient.on('state', function (state) {
-            console.log(state);
         });
         this._zkClient.connect();
     };

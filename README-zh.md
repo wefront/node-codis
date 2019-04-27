@@ -92,7 +92,7 @@ Codis proxy 的登录密码。
 {
     sessionTimeout: 30000,
     spinDelay: 1000,
-    retries: 0
+    retries: 1
 }
 ```
 
