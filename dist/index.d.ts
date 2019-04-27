@@ -13,7 +13,7 @@ export interface NodeCodisOpts {
     codisPassword?: string;
     zkClientOpts?: zookeeper.Option;
     redisClientOpts?: redis.ClientOpts;
-    log?: boolean;
+    log?: boolean | Function;
 }
 export interface CodisClient extends redis.RedisClient {
 }

@@ -117,11 +117,24 @@ const nodeCodis = new NodeCodis({
 
 #### log `boolean` `default=true`
 
-是否启用日志，默认为打开，打印的日志格式如下：
+是否启用日志，默认使用 [debug](https://www.npmjs.com/package/debug) 这个库，并且是开启状态，打印的日志格式如下：
 
 `node-codis` Connect to codis at proxy:e203bf77d1c7b3e2c132984f14827c04 @192.168.3.62:19201 +0ms
 
 `node-codis` Connect to codis at proxy:40297cde8c3453714459ab1c452c6c56 @192.168.3.72:19201 +7ms
+
+你也可以传入自定的logger:
+
+```js
+const nodeCodis = new NodeCodis({
+  zkServers: '127.0.0.1:6701, 127.0.0.1:6702',
+  zkCodisProxyDir: '/zk/codis/db_test_node/proxy',
+  codisPassword: 'your_codis_password',
+  log: console.log
+})
+```
+
+也可以传入 `false` 来关闭日志。
 
 ---
 

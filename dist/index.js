@@ -15,10 +15,10 @@ var zookeeper = require("node-zookeeper-client");
 var redis = require("redis");
 var _ = require("lodash");
 var debug = require("debug");
-var log = debug('node-codis');
 var DISCONNECTED = 'DISCONNECTED';
 var RECONNECTED = 'RECONNECTED';
 var CONNECTED = 'CONNECTED';
+var log;
 var NodeCodis = /** @class */ (function () {
     function NodeCodis(opts) {
         this._opts = opts || Object.create(null);
@@ -169,10 +169,17 @@ var NodeCodis = /** @class */ (function () {
         }
     };
     NodeCodis.prototype._manageLog = function () {
-        debug.enable('node-codis');
-        if (this._opts.log === false) {
-            debug.disable();
+        var logger = this._opts.log;
+        if (typeof logger === 'function') {
+            log = logger;
+            return;
         }
+        if (logger === false) {
+            log = function () { };
+            return;
+        }
+        log = debug('node-codis');
+        debug.enable('node-codis');
     };
     Object.defineProperty(NodeCodis.prototype, "codisClientPool", {
         get: function () {

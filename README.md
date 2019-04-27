@@ -115,14 +115,27 @@ We use redis to connect to the codis-proxy service, so you can pass in these par
 
 Reference here [https://github.com/NodeRedis/node_redis#rediscreateclient](https://github.com/NodeRedis/node_redis#rediscreateclient)
 
-#### log `boolean` `default=true`
+#### log `boolean | Function`
 
-Whether to enable the log, the default is open
+Whether to enable the log, default open, use the [debug](https://www.npmjs.com/package/debug) library.
 The printed log looks like this:
 
 `node-codis` Connect to codis at proxy:e203bf77d1c7b3e2c132984f14827c04 @192.168.3.62:19201 +0ms
 
 `node-codis` Connect to codis at proxy:40297cde8c3453714459ab1c452c6c56 @192.168.3.72:19201 +7ms
+
+You can also set up a custom logger, like this:
+
+```js
+const nodeCodis = new NodeCodis({
+  zkServers: '127.0.0.1:6701, 127.0.0.1:6702',
+  zkCodisProxyDir: '/zk/codis/db_test_node/proxy',
+  codisPassword: 'your_codis_password',
+  log: console.log
+})
+```
+
+You can pass `false` to close log.
 
 ---
 

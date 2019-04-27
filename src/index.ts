@@ -2,11 +2,12 @@ import zookeeper = require('node-zookeeper-client')
 import redis = require('redis')
 import _ = require('lodash')
 import debug = require('debug')
-const log = debug('node-codis')
 
 const DISCONNECTED = 'DISCONNECTED'
 const RECONNECTED = 'RECONNECTED'
 const CONNECTED = 'CONNECTED'
+
+let log: any
 
 export interface CodisClientPoolItem {
   client: redis.RedisClient,
@@ -23,7 +24,7 @@ export interface NodeCodisOpts {
   codisPassword?: string
   zkClientOpts?: zookeeper.Option
   redisClientOpts?: redis.ClientOpts
-  log?: boolean
+  log?: boolean | Function
 }
 
 export interface CodisClient extends redis.RedisClient { }
@@ -209,10 +210,17 @@ export class NodeCodis {
   }
 
   private _manageLog() {
-    debug.enable('node-codis')
-    if (this._opts.log === false) {
-      debug.disable()
+    const logger = this._opts.log
+    if (typeof logger === 'function') {
+      log = logger
+      return
     }
+    if (logger === false) {
+      log = () => {}
+      return
+    }
+    log = debug('node-codis')
+    debug.enable('node-codis')
   }
 
   public get codisClientPool() {
