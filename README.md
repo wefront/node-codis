@@ -137,6 +137,21 @@ const nodeCodis = new NodeCodis({
 
 You can pass `false` to close log.
 
+#### proxyAddrKey `string` `optional`
+
+Proxy address field. Usually when the codis-proxy is registered to zk, the field of the proxy address is called `addr`. If not, you can pass in a custom field.
+
+##### example
+
+```js
+const nodeCodis = new NodeCodis({
+  zkServers: '127.0.0.1:6701, 127.0.0.1:6702',
+  zkCodisProxyDir: '/zk/codis/db_test_node/proxy',
+  codisPassword: 'your_codis_password',
+  proxyAddrKey: 'proxy_addr'
+})
+```
+
 ---
 
 ### Property

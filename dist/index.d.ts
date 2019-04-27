@@ -14,6 +14,7 @@ export interface NodeCodisOpts {
     zkClientOpts?: zookeeper.Option;
     redisClientOpts?: redis.ClientOpts;
     log?: boolean | Function;
+    proxyAddrKey?: string;
 }
 export interface CodisClient extends redis.RedisClient {
 }

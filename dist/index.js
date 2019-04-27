@@ -77,18 +77,19 @@ var NodeCodis = /** @class */ (function () {
                     var childPath = rootPath + '/' + proxy;
                     _this._getData(childPath, function (data) {
                         try {
-                            var detail_1 = JSON.parse(data.toString('utf8'));
+                            var detail = JSON.parse(data.toString('utf8'));
                             var redisClientOpts = _this._opts.redisClientOpts || {};
+                            var proxyAddr_1 = detail[_this._opts.proxyAddrKey || 'addr'];
                             var clientOpts = {
-                                url: "redis://" + detail_1.addr
+                                url: "redis://" + proxyAddr_1
                             };
                             if (_this._opts.codisPassword) {
                                 clientOpts.password = _this._opts.codisPassword;
                             }
                             var client = redis.createClient(Object.assign(redisClientOpts, clientOpts));
-                            client.on('connect', function () { return log("Connect to codis on proxy:" + proxy + " @" + detail_1.addr); });
+                            client.on('connect', function () { return log("Connect to codis on proxy:" + proxy + " @" + proxyAddr_1); });
                             client.on('error', function (e) { return log('Connect codis failed: ', e); });
-                            _this._addCodisClient(proxy, { client: client, detail: detail_1 });
+                            _this._addCodisClient(proxy, { client: client, detail: detail });
                         }
                         catch (e) {
                             log('Connect codis failed:', e);

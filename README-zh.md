@@ -136,6 +136,21 @@ const nodeCodis = new NodeCodis({
 
 也可以传入 `false` 来关闭日志。
 
+#### proxyAddrKey `string` `optional`
+
+proxy地址的字段。 通常当codis-proxy注册到zk时，代理地址的字段名为 `addr`。 如果不是，可以传入自定义字段。
+
+##### example
+
+```js
+const nodeCodis = new NodeCodis({
+  zkServers: '127.0.0.1:6701, 127.0.0.1:6702',
+  zkCodisProxyDir: '/zk/codis/db_test_node/proxy',
+  codisPassword: 'your_codis_password',
+  proxyAddrKey: 'proxy_addr'
+})
+```
+
 ---
 
 ### 属性

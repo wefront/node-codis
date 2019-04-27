@@ -24,7 +24,8 @@ export interface NodeCodisOpts {
   codisPassword?: string
   zkClientOpts?: zookeeper.Option
   redisClientOpts?: redis.ClientOpts
-  log?: boolean | Function
+  log?: boolean | Function,
+  proxyAddrKey?: string
 }
 
 export interface CodisClient extends redis.RedisClient { }
@@ -110,14 +111,15 @@ export class NodeCodis {
             try {
               const detail = JSON.parse(data.toString('utf8'))
               const redisClientOpts = this._opts.redisClientOpts || {}
+              const proxyAddr = detail[this._opts.proxyAddrKey || 'addr']
               const clientOpts: any = {
-                url: `redis://${detail.addr}`
+                url: `redis://${proxyAddr}`
               }
               if (this._opts.codisPassword) {
                 clientOpts.password = this._opts.codisPassword
               }
               const client = redis.createClient(Object.assign(redisClientOpts, clientOpts))
-              client.on('connect', () => log(`Connect to codis on proxy:${proxy} @${detail.addr}`))
+              client.on('connect', () => log(`Connect to codis on proxy:${proxy} @${proxyAddr}`))
               client.on('error', e => log('Connect codis failed: ', e))
               this._addCodisClient(proxy, { client, detail })
             } catch (e) {
