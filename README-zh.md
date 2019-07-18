@@ -47,9 +47,9 @@ nodeCodis.on('connected', (err, client) => {
 
 ## 文档
 
-### 构造函数
+### 构造函数参数
 
-#### zkServers `string` `required`
+#### zkServers `string` `必填`
 
 以逗号分隔的 `host:port`, 每个代表一个 ZooKeeper 服务端。你也可以在后面跟上子路径，然后客户端将以此路径为根节点。例如：
 
@@ -58,25 +58,24 @@ nodeCodis.on('connected', (err, client) => {
 'localhost:2181,localhost:2182/test'
 ```
 
-#### zkCodisProxyDir `string` `required`
+#### zkCodisProxyDir `string` `必填`
 
 在 zookeeper 上的 codis proxy 的节点路径。 NodeCodis 将与此目录中的所有 codis proxy 建立连接，然后随机选择一个作为客户端。例如：
-
-> 在 `codis2.x` 版本, 一般位于 `/zk/codis/db_${product_name}/proxy`。
-
-> 在 `codis3.x` 版本, 如果服务端 codis-proxy 配置成 `jodis_compatible = false`, 一般位于 `/jodis/${product_name}/proxy`。
-
-##### example
 
 ```bash
 /zk/codis/db_test_node/proxy
 ```
 
-#### codisPassword `string` `optional`
+> 在 `codis2.x` 版本, 一般位于 `/zk/codis/db_${product_name}/proxy`。
+
+> 在 `codis3.x` 版本, 如果服务端 codis-proxy 配置成 `jodis_compatible = false`, 一般位于 `/jodis/${product_name}/proxy`。
+
+
+#### codisPassword `string` `可选`
 
 Codis proxy 的登录密码。
 
-#### zkClientOpts `object` `optional`
+#### zkClientOpts `object` `可选`
 
 用于设置zookeeper客户端的选项，包括以下几个参数：
 
@@ -96,8 +95,6 @@ Codis proxy 的登录密码。
 }
 ```
 
-##### example
-
 ```js
 const nodeCodis = new NodeCodis({
   zkServers: '127.0.0.1:6701, 127.0.0.1:6702',
@@ -109,13 +106,13 @@ const nodeCodis = new NodeCodis({
 })
 ```
 
-#### redisClientOpts `object` `optional`
+#### redisClientOpts `object` `可选`
 
 我们使用 `redis` 连接到 codis-proxy 服务，因此您可以在创建 redis 户端时传递这些选项。
 
 参考这里 [https://github.com/NodeRedis/node_redis#rediscreateclient](https://github.com/NodeRedis/node_redis#rediscreateclient)
 
-#### log `boolean` `default=true`
+#### log `boolean` `默认为true`
 
 是否启用日志，默认使用 [debug](https://www.npmjs.com/package/debug) 这个库，并且是开启状态，打印的日志格式如下：
 
@@ -136,11 +133,9 @@ const nodeCodis = new NodeCodis({
 
 也可以传入 `false` 来关闭日志。
 
-#### proxyAddrKey `string` `optional`
+#### proxyAddrKey `string` `可选`
 
-proxy地址的字段。 通常当codis-proxy注册到zk时，代理地址的字段名为 `addr`。 如果不是，可以传入自定义字段。
-
-##### example
+proxy地址的字段。 通常当codis-proxy注册到zk时，代理地址的字段名为 `addr`。 如果不是，可以传入自定义字段。例如：
 
 ```js
 const nodeCodis = new NodeCodis({
@@ -157,9 +152,7 @@ const nodeCodis = new NodeCodis({
 
 #### codisClientPool
 
-返回所有连接的codis客户端。
-
-##### example
+返回所有连接的codis客户端。例如：
 
 ```js
 const nodeCodis = new NodeCodis({
@@ -177,9 +170,7 @@ console.log(nodeCodis.codisClientPool)
 
 #### connected
 
-当第一次连接完所有的 codis-proxy 时，将触发 `connect` 事件，并随机选择一个已连接的codis客户端传入回调函数。
-
-##### example
+当第一次连接完所有的 codis-proxy 时，将触发 `connect` 事件，并随机选择一个已连接的codis客户端传入回调函数。例如：
 
 ```js
 const nodeCodis = new NodeCodis({
@@ -204,9 +195,7 @@ nodeCodis.on('connected', (err, client) => {
 
 #### reconnected
 
-当 codis 的 zookeeper 节点发生变化时，内部会进行 codis-proxy 的重新连接，并触发 `reconnected` 事件，并将随机一个已连接的 codis 客户端传入回调函数。
-
-##### example
+当 codis 的 zookeeper 节点发生变化时，内部会进行 codis-proxy 的重新连接，并触发 `reconnected` 事件，并将随机一个已连接的 codis 客户端传入回调函数。例如：
 
 ```js
 
@@ -233,11 +222,7 @@ nodeCodis.on('reconnected', (err, client) => {
 #### getRandomClient(clientsMap: CodisClientPool) 
 
 随机获取已连接的codis客户端，如果客户端列表为空，则返回 `null`。
-你可以在某些框架的中间件中使用此方法来实现负载平衡。
-
-##### example
-
-use express.js:
+你可以在某些框架的中间件中使用此方法来实现负载平衡。例如：
 
 ```js
 // app.js

@@ -47,7 +47,7 @@ nodeCodis.on('connected', (err, client) => {
 
 ## Documentation
 
-### Constructor
+### Constructor Options
 
 #### zkServers `string` `required`
 
@@ -60,17 +60,15 @@ Comma separated `host:port` pairs, each represents a ZooKeeper server. You can o
 
 #### zkCodisProxyDir `string` `required`
 
-Node path of codis-proxy on zookeeper. NodeCodis will establish a connection with all codis-proxy in this directory, and then randomly select one as the client. e.g.
-
-> In the `codis2.x`, it is usually located at `/zk/codis/db_${product_name}/proxy`
-
-> In the `codis3.x`, If the server codis-proxy is configured as `jodis_compatible = false`, it is usually located at `/jodis/${product_name}/proxy`
-
-##### example
+Node path of codis-proxy on zookeeper. NodeCodis will establish a connection with all codis-proxy in this directory, and then randomly select one as the client. link this:
 
 ```bash
 /zk/codis/db_test_node/proxy
 ```
+
+> In the `codis2.x`, it is usually located at `/zk/codis/db_${product_name}/proxy`
+
+> In the `codis3.x`, If the server codis-proxy is configured as `jodis_compatible = false`, it is usually located at `/jodis/${product_name}/proxy`
 
 #### codisPassword `string` `optional`
 
@@ -96,7 +94,7 @@ Defaults options:
 }
 ```
 
-##### example
+For example:
 
 ```js
 const nodeCodis = new NodeCodis({
@@ -139,9 +137,7 @@ You can pass `false` to close log.
 
 #### proxyAddrKey `string` `optional`
 
-Proxy address field. Usually when the codis-proxy is registered to zk, the field of the proxy address is called `addr`. If not, you can pass in a custom field.
-
-##### example
+Proxy address field. Usually when the codis-proxy is registered to zk, the field of the proxy address is called `addr`. If not, you can pass in a custom field. link this:
 
 ```js
 const nodeCodis = new NodeCodis({
@@ -158,9 +154,7 @@ const nodeCodis = new NodeCodis({
 
 #### codisClientPool
 
-Return all connected codis client.
-
-##### example
+Return all connected codis client. link this:
 
 ```js
 const nodeCodis = new NodeCodis({
@@ -179,9 +173,7 @@ console.log(nodeCodis.codisClientPool)
 
 #### connected
 
-When all codis-proxy are connected for the first time, the connect event is fired and a connected codis client is randomly selected as the argument to the callback function.
-
-##### example
+When all codis-proxy are connected for the first time, the connect event is fired and a connected codis client is randomly selected as the argument to the callback function. link this:
 
 ```js
 const nodeCodis = new NodeCodis({
@@ -206,9 +198,7 @@ nodeCodis.on('connected', (err, client) => {
 
 #### reconnected
 
-When the zookeeper node of codis changes, the codis-proxy is reconnected internally, and the reconnected event is triggered, and a random connected codis client is passed to the callback function.
-
-##### example
+When the zookeeper node of codis changes, the codis-proxy is reconnected internally, and the reconnected event is triggered, and a random connected codis client is passed to the callback function. link this:
 
 ```js
 
@@ -235,11 +225,7 @@ nodeCodis.on('reconnected', (err, client) => {
 #### getRandomClient(clientsMap: CodisClientPool) 
 
 Randomly get a connected codis client, if the client pool is empty, return `null`.
-You can use this method in some framework middleware to achieve load balancing.
-
-##### example
-
-use express.js:
+You can use this method in some framework middleware to achieve load balancing. link this:
 
 ```js
 // app.js
