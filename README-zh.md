@@ -8,7 +8,7 @@ Node-codis是在nodejs上运行的codis客户端，用于连接到redis集群服
 
 使用了 [node-zookeeper-client](https://www.npmjs.com/package/node-zookeeper-client) 这个库来用于服务发现。
 
-使用了 [redis](https://www.npmjs.com/package/redis) 这个库来连接 codis 代理服务。
+使用了 [redis](https://www.npmjs.com/package/redis) 这个库来连接 codis 代理服务。并且也支持使用 [ioredis](https://github.com/luin/ioredis)。
 
 [English Document](https://github.com/wefront/node-codis/blob/master/README.md)
 
@@ -44,6 +44,27 @@ nodeCodis.on('connected', (err, client) => {
   })
 })
 ```
+
+### ioredis 版本
+
+可以通过 `NodeIOCodis` 创建基于 [ioredis](https://github.com/luin/ioredis) 的 codis 实例。
+
+```js
+const Codis = require('node-codis')
+const nodeCodis = new Codis.NodeIOCodis({
+  // ...
+})
+
+nodeCodis.on('connected',
+/**
+ * @param {Codis.CodisIOClient} client - 借助 jsDoc 进行语法提示
+ */
+(err, client) => {
+  // ...
+})
+```
+
+> 阅读以下文档时请注意，`NodeIOCodis` 有别于 `NodeCodis`，它不存在 `print` 方法！
 
 ## 文档
 
