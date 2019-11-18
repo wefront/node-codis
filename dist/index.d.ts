@@ -1,7 +1,8 @@
 import zookeeper = require('node-zookeeper-client');
 import redis = require('redis');
+import ioredis = require('ioredis');
 export interface CodisClientPoolItem {
-    client: redis.RedisClient;
+    client: ioredis.Redis | redis.RedisClient;
     detail: any;
 }
 export interface CodisClientPool {
@@ -12,14 +13,13 @@ export interface NodeCodisOpts {
     zkCodisProxyDir: string;
     codisPassword?: string;
     zkClientOpts?: zookeeper.Option;
-    redisClientOpts?: redis.ClientOpts;
+    redisClientOpts?: redis.ClientOpts | ioredis.RedisOptions;
+    redisClient?: 'redis' | 'ioredis';
     log?: boolean | Function;
     proxyAddrKey?: string;
 }
-export interface CodisClient extends redis.RedisClient {
-}
-export declare class NodeCodis {
-    static print: typeof redis.print;
+export declare class BaseCodis {
+    static print?: typeof redis.print | undefined;
     private _zkClient;
     private _opts;
     private _state;
@@ -41,5 +41,19 @@ export declare class NodeCodis {
     readonly codisClientPool: CodisClientPool;
     readonly codisClient: any;
     on(event: string, handler: Function): void;
-    static getRandomClient(clientsMap: any): any;
+    static getRandomClient(clientsMap: CodisClientPool): redis.RedisClient | ioredis.Redis | null;
+}
+export interface CodisClient extends redis.RedisClient {
+}
+export declare class NodeCodis extends BaseCodis {
+    static print: typeof redis.print;
+    constructor(opts: NodeCodisOpts);
+    static getRandomClient(clientsMap: CodisClientPool): redis.RedisClient;
+}
+export interface CodisIOClient extends ioredis.Redis {
+}
+export declare class NodeIOCodis extends BaseCodis {
+    static print: undefined;
+    constructor(opts: NodeCodisOpts);
+    static getRandomClient(clientsMap: CodisClientPool): ioredis.Redis;
 }

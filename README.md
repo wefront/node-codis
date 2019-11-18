@@ -8,7 +8,7 @@ Node-codis is a codis client running on nodejs, Used to connect to redis cluster
 
 Use the [node-zookeeper-client](https://www.npmjs.com/package/node-zookeeper-client) library for service discovery.
 
-Use the [redis](https://www.npmjs.com/package/redis) library to connect to the codis proxy service.
+Use the [redis](https://www.npmjs.com/package/redis) library to connect to the codis proxy service. The [ioredis](https://github.com/luin/ioredis) is supported as well.
 
 [中文说明](https://github.com/wefront/node-codis/blob/master/README-zh.md)
 
@@ -20,7 +20,7 @@ Use the [redis](https://www.npmjs.com/package/redis) library to connect to the c
 npm i node-codis -S
 ```
 
-## Simple
+## Usage
 
 ```js
 const { NodeCodis } = require('node-codis')
@@ -44,6 +44,27 @@ nodeCodis.on('connected', (err, client) => {
   })
 })
 ```
+
+### ioredis
+
+Codis instance with [ioredis](https://github.com/luin/ioredis) can be created by `NodeIOCodis`.
+
+```js
+const Codis = require('node-codis')
+const nodeCodis = new Codis.NodeIOCodis({
+  // ...
+})
+
+nodeCodis.on('connected',
+/**
+ * @param {Codis.CodisIOClient} client
+ */
+(err, client) => {
+  // ...
+})
+```
+
+> Please NOTE that `NodeIOCodis` doesn't have a `print` method like `NodeCodis`!
 
 ## Documentation
 
