@@ -1,5 +1,6 @@
 import zookeeper = require('node-zookeeper-client')
 import redis = require('redis')
+import ioredis = require('ioredis')
 import _ = require('lodash')
 import debug = require('debug')
 
@@ -10,7 +11,7 @@ const CONNECTED = 'CONNECTED'
 let log: any
 
 export interface CodisClientPoolItem {
-  client: redis.RedisClient,
+  client: ioredis.Redis | redis.RedisClient
   detail: any
 }
 
@@ -23,15 +24,14 @@ export interface NodeCodisOpts {
   zkCodisProxyDir: string
   codisPassword?: string
   zkClientOpts?: zookeeper.Option
-  redisClientOpts?: redis.ClientOpts
+  redisClientOpts?: redis.ClientOpts | ioredis.RedisOptions
+  redisClient?: 'redis' | 'ioredis'
   log?: boolean | Function,
   proxyAddrKey?: string
 }
 
-export interface CodisClient extends redis.RedisClient { }
-
-export class NodeCodis {
-  public static print = redis.print
+export class BaseCodis {
+  public static print?= redis.print
 
   // Zookeeper client
   private _zkClient: zookeeper.Client
@@ -110,17 +110,23 @@ export class NodeCodis {
           this._getData(childPath, (data: any) => {
             try {
               const detail = JSON.parse(data.toString('utf8'))
-              const redisClientOpts = this._opts.redisClientOpts || {}
               const proxyAddr = detail[this._opts.proxyAddrKey || 'addr']
-              const clientOpts: any = {
-                url: `redis://${proxyAddr}`
-              }
+
+              const clientOpts = Object.assign({}, this._opts.redisClientOpts, { url: `redis://${proxyAddr}` })
+
               if (this._opts.codisPassword) {
                 clientOpts.password = this._opts.codisPassword
               }
-              const client = redis.createClient(Object.assign(redisClientOpts, clientOpts))
-              client.on('connect', () => log(`Connect to codis on proxy:${proxy} @${proxyAddr}`))
-              client.on('error', e => log('Connect codis failed: ', e))
+              let client: redis.RedisClient | ioredis.Redis
+              if (this._opts.redisClient === 'ioredis') {
+                // new ioredis won't throw
+                client = new ioredis(clientOpts.url, clientOpts)
+                log(`Connect to codis on proxy:${proxy} @${proxyAddr}`)
+              } else {
+                client = redis.createClient(clientOpts)
+                client.on('connect', () => log(`Connect to codis on proxy:${proxy} @${proxyAddr}`))
+                client.on('error', e => log('Connect codis failed: ', e))
+              }
               this._addCodisClient(proxy, { client, detail })
             } catch (e) {
               log('Connect codis failed:', e)
@@ -243,12 +249,38 @@ export class NodeCodis {
   }
 
   // Randomly get a connected redis client
-  public static getRandomClient(clientsMap) {
+  public static getRandomClient(clientsMap: CodisClientPool) {
     const proxies = Object.keys(clientsMap)
     if (!proxies.length) {
       return null
     }
     const randomProxy = proxies[_.random(0, proxies.length - 1)]
     return clientsMap[randomProxy].client
+  }
+}
+
+export interface CodisClient extends redis.RedisClient { }
+
+export class NodeCodis extends BaseCodis {
+  public static print = redis.print
+  constructor(opts: NodeCodisOpts) {
+    opts.redisClient = 'redis'
+    super(opts)
+  }
+  public static getRandomClient(clientsMap: CodisClientPool) {
+    return super.getRandomClient(clientsMap) as redis.RedisClient
+  }
+}
+
+export interface CodisIOClient extends ioredis.Redis { }
+
+export class NodeIOCodis extends BaseCodis {
+  public static print = undefined
+  constructor(opts: NodeCodisOpts) {
+    opts.redisClient = 'ioredis'
+    super(opts)
+  }
+  public static getRandomClient(clientsMap: CodisClientPool) {
+    return super.getRandomClient(clientsMap) as ioredis.Redis
   }
 }

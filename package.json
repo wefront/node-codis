@@ -1,6 +1,6 @@
 {
   "name": "node-codis",
-  "version": "1.0.9",
+  "version": "1.1.0",
   "description": "Codis client for node",
   "main": "./dist/index.js",
   "scripts": {
@@ -11,6 +11,7 @@
   "keywords": [
     "codis",
     "redis",
+    "ioredis",
     "node",
     "cluster",
     "datebase",
@@ -22,13 +23,15 @@
   "author": "guahao inc",
   "license": "MIT",
   "engines": {
-    "node": ">=0.6.0"
+    "node": ">=6"
   },
   "homepage": "https://github.com/wefront/node-codis",
   "dependencies": {
+    "@types/ioredis": "^4.0.19",
     "@types/node-zookeeper-client": "^0.2.6",
     "@types/redis": "^2.8.10",
     "debug": "^4.1.1",
+    "ioredis": "^4.14.1",
     "lodash": "^4.17.11",
     "node-zookeeper-client": "^0.2.3",
     "redis": "^2.8.0"
